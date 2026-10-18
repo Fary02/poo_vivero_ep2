@@ -14,6 +14,14 @@ Simulacro de la **Evaluación Parcial 2** de *Programación Orientada a Objetos*
 - `main`: **condiciones de la prueba**. Solo trae el modelo (`cl.duoc.vivero.model`), un `pom.xml` sin dependencias y una carpeta de recursos vacía. No hay `module-info.java` ni clase `Application`: se construyen como parte de la evaluación.
 - `solucion`: implementación de referencia y `GUIA.md` con la resolución paso a paso.
 
+## Cómo ejecutar la solución
+
+```bash
+mvn javafx:run
+```
+
+La guía de resolución está en [`GUIA.md`](GUIA.md).
+
 ## Cómo practicar
 
 1. Clona el repositorio (rama `main`) y ábrelo como proyecto Maven en IntelliJ IDEA con JDK 21.
