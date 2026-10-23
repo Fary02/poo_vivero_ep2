@@ -30,6 +30,11 @@
         </dependency>
 
         <!-- Agrega aquí la dependencia de Gson para trabajar con archivos JSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.2</version>
+        </dependency>
 
     </dependencies>
 

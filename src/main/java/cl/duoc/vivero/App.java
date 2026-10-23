@@ -12,12 +12,12 @@ import java.net.URL;
  * Aplicación JavaFX. Carga la vista principal y la muestra en la ventana.
  * <p>
  * La vista principal debe crearse con Scene Builder en:
- * src/main/resources/cl/duoc/vivero/view/main-view.fxml
+ * src/main/resources/cl/duoc/vivero/view/vivero-view.fxml
  */
 public class App extends Application {
 
     /** Ubicación de la vista principal dentro de src/main/resources. */
-    private static final String VISTA_PRINCIPAL = "/cl/duoc/vivero/view/main-view.fxml";
+    private static final String VISTA_PRINCIPAL = "/cl/duoc/vivero/view/vivero-view.fxml";
 
     @Override
     public void start(Stage stage) throws Exception {
