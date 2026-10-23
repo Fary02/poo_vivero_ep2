@@ -29,11 +29,11 @@
 
 El Vivero Hojas del Sur ya cuenta con el modelo de clases desarrollado en la evaluación anterior: el sistema distingue plantas de interior y de exterior, calcula el precio unitario de cada planta según su tipo y permite marcar las plantas de exterior como listas para despacho. Sin embargo, ese sistema solo funciona por consola y la información se pierde cada vez que el programa se cierra.
 
-La administración del vivero ha solicitado transformarlo en una aplicación de escritorio con ventanas, que permita al personal de ventas registrar, buscar y eliminar plantas, y que conserve la información en archivos para que esté disponible la próxima vez que se abra la aplicación.
+La administración del vivero ha solicitado transformarlo en una aplicación de escritorio con ventanas, que permita al personal de ventas registrar y eliminar plantas, y que conserve la información en archivos para que esté disponible la próxima vez que se abra la aplicación.
 
 ### Proyecto base
 
-Al inicio de la evaluación, el/la docente te entregará un proyecto con el modelo ya implementado y probado, correspondiente al diagrama siguiente. Tu trabajo consiste en construir sobre ese modelo la interfaz gráfica y el almacenamiento en archivos. No debes reescribir ni reemplazar las clases entregadas.
+Al inicio de la evaluación, el/la docente te entregará un proyecto Maven con la configuración inicial, la clase de arranque y el modelo ya implementado y probado, correspondiente al diagrama siguiente. Tu trabajo consiste en construir sobre ese modelo la interfaz gráfica y el almacenamiento en archivos. No debes reescribir ni reemplazar las clases entregadas.
 
 ```mermaid
 classDiagram
@@ -74,34 +74,30 @@ Datos comunes: el nombre no puede ser nulo ni vacío, la altura debe estar entre
 
 La solución debe separar responsabilidades según el patrón Modelo-Vista-Controlador, con una capa de acceso a datos basada en el patrón DAO/Repository. El proyecto debe contener, como mínimo:
 
-- Configuración del proyecto: dependencias de JavaFX y de la librería Gson disponible en el laboratorio, y la declaración de módulos necesaria para que la aplicación compile y se ejecute.
+- Configuración del proyecto: el proyecto base ya incluye las dependencias de JavaFX y la clase de arranque de la aplicación. Debes agregar al archivo `pom.xml` la dependencia de la librería Gson disponible en el laboratorio, necesaria para trabajar con archivos JSON.
 - Distribución de paquetes y responsabilidades acorde al patrón de diseño.
 
-## 3. Ventana principal
+## 3. Ventana de la aplicación
 
-Al ejecutar la aplicación se abre la ventana principal, que debe contener:
+Al ejecutar la aplicación se abre una única ventana, desde la cual se realizan todas las acciones. La ventana debe contener:
 
+- Un formulario de registro con los campos descritos más abajo y un botón Registrar.
 - Una tabla con las plantas registradas y las columnas Tipo, Nombre, Altura (cm), Cantidad y Precio unitario. El precio que se muestra es el que calcula el modelo para cada planta.
-- Un campo de búsqueda por nombre. A medida que se escribe, la tabla muestra solo las plantas cuyo nombre contiene el texto ingresado, sin distinguir mayúsculas de minúsculas. Al borrar el texto, la tabla vuelve a mostrar todas las plantas. Buscar no elimina ni modifica los datos registrados.
-- Un botón Agregar, que abre la ventana de registro descrita en la sección 4.
 - Un botón Eliminar, que quita del registro la planta seleccionada en la tabla. Si no hay una fila seleccionada, la aplicación informa que se debe seleccionar una planta y no realiza ningún cambio.
-- Un área de mensajes dentro de la misma ventana, donde se informa el resultado de cada acción: registro exitoso, eliminación, falta de selección o error al leer o guardar los archivos. Cada mensaje reemplaza al anterior. Los mensajes no se muestran por consola.
+- Un área de mensajes dentro de la misma ventana, donde se informa el resultado de cada acción: registro exitoso, dato no válido, eliminación, falta de selección o error al leer o guardar los archivos. Cada mensaje reemplaza al anterior. Los mensajes no se muestran por consola.
 
-## 4. Ventana de registro
-
-El botón Agregar abre una segunda ventana con un formulario vacío. Mientras esta ventana esté abierta, no se puede interactuar con la ventana principal. El formulario debe contener:
+**Campos del formulario**
 
 - Un selector de tipo con las opciones Interior y Exterior.
 - Datos comunes: nombre, altura y cantidad.
 - Dato de la planta de interior: volumen de la maceta en litros.
 - Datos de la planta de exterior: especie, si resiste las heladas (sí/no) y si está lista para despacho (sí/no).
 
-Al cambiar el tipo en el selector, solo quedan visibles los datos específicos del tipo elegido. La ventana cuenta con dos botones:
+Al cambiar el tipo en el selector, solo quedan habilitados los datos específicos del tipo elegido; los datos del otro tipo quedan deshabilitados y no se consideran al registrar.
 
-- Confirmar: valida los datos según la sección 5. Si son correctos, registra la planta, cierra el formulario y la tabla de la ventana principal muestra la nueva planta junto con un mensaje de confirmación, por ejemplo: “Menta (Interior) registrada correctamente.”
-- Cancelar: cierra el formulario sin registrar ninguna planta.
+Al presionar Registrar, la aplicación valida los datos según la sección 4. Si son correctos, registra la planta, la tabla la muestra de inmediato, el área de mensajes informa la confirmación (por ejemplo: “Menta (Interior) registrada correctamente.”) y el formulario queda vacío para un nuevo registro.
 
-## 5. Validaciones del formulario
+## 4. Validaciones del formulario
 
 Antes de registrar, el formulario debe verificar los datos ingresados según las siguientes reglas:
 
@@ -115,11 +111,11 @@ Antes de registrar, el formulario debe verificar los datos ingresados según las
 Las reglas de nombre, altura y cantidad son las mismas que ya aplica el modelo entregado. Si algún dato no es válido:
 
 - la planta no se registra;
-- el propio formulario muestra un mensaje que indica qué campo es incorrecto y por qué;
+- el área de mensajes indica qué campo es incorrecto y por qué;
 - los valores ya ingresados se mantienen para que puedan corregirse;
 - la aplicación no se detiene ni muestra errores por consola.
 
-## 6. Almacenamiento de la información
+## 5. Almacenamiento de la información
 
 La información de las plantas debe conservarse entre una ejecución y otra, en formato JSON, en la carpeta raíz del proyecto:
 
@@ -133,7 +129,7 @@ El comportamiento esperado es el siguiente:
 - Cada vez que se registra o se elimina una planta, los archivos se actualizan automáticamente, sin que el usuario deba presionar un botón para guardar.
 - Lo que muestra la tabla y lo guardado en los archivos debe coincidir en todo momento.
 
-## 7. Datos de prueba y resultado esperado
+## 6. Datos de prueba y resultado esperado
 
 Registra desde la aplicación las siguientes plantas:
 
@@ -144,11 +140,11 @@ Registra desde la aplicación las siguientes plantas:
 | Exterior | Menta | 35 | 20 | Especie: Mentha spicata \| Heladas: sí \| Despacho: sí | $6.600 |
 | Exterior | Rosal | 90 | 8 | Especie: Rosa x hybrida \| Heladas: no \| Despacho: no | $5.500 |
 
-Luego de registrarlas, la ventana principal debe mostrar las cuatro plantas con sus precios. Al escribir “me” en el campo de búsqueda, la tabla muestra solo a las dos plantas llamadas Menta. Si se presiona Eliminar sin seleccionar una fila, el aviso aparece en la misma ventana.
+Luego de registrarlas, la ventana debe mostrar las cuatro plantas con sus precios. Si se presiona Eliminar sin seleccionar una fila, el aviso aparece en la misma ventana.
 
-Si un dato del formulario no es válido (por ejemplo, una altura `abc` o una cantidad `0`), se indica el campo con problemas y se mantienen los valores ingresados.
+Si un dato del formulario no es válido (por ejemplo, una altura `abc` o una cantidad `0`), el área de mensajes indica el campo con problemas y se mantienen los valores ingresados.
 
-### Verificación de almacenamiento
+**Verificación de almacenamiento**
 
 - Cierra la aplicación y vuelve a abrirla: la tabla debe mostrar las mismas cuatro plantas, y la Menta de exterior debe seguir lista para despacho.
 - Elimina a Rosal, cierra la aplicación y vuelve a abrirla: Rosal ya no debe aparecer.
