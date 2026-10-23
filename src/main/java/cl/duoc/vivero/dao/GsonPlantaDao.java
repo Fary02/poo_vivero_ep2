@@ -19,9 +19,9 @@ import java.util.List;
 /**
  * Guarda las plantas de un tipo en un archivo JSON con Gson.
  *
- * Es la unica clase, junto a AppFX, que conoce el formato y la ubicacion de
- * los archivos. Un objeto de esta clase por tipo de planta: como cada archivo
- * contiene una sola clase, Gson no necesita informacion de subtipos.
+ * Es la unica clase que conoce el formato JSON; la ruta del archivo se indica al
+ * crearla. Un objeto de esta clase por tipo de planta: como cada archivo contiene
+ * una sola clase, Gson no necesita informacion de subtipos.
  */
 public class GsonPlantaDao<T extends Planta> implements PlantaDao<T> {
 

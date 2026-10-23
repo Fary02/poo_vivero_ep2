@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>Vivero Hojas del Sur</name>
-    <description>Solucion de referencia del simulacro EP2 (DSY1102): JavaFX, MVC, ventana modal, validacion y persistencia JSON con Gson.</description>
+    <description>Solucion de referencia del simulacro EP2 (DSY1102): JavaFX, MVC, ventana unica, validacion y persistencia JSON con Gson.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,13 +71,13 @@
                 <version>3.4.2</version>
             </plugin>
 
-            <!-- mvn javafx:run. Con module-info.java la clase se indica como modulo/clase. -->
+            <!-- mvn javafx:run. El proyecto corre con classpath (sin module-info.java). -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>cl.duoc.vivero/cl.duoc.vivero.AppFX</mainClass>
+                    <mainClass>cl.duoc.vivero.Launcher</mainClass>
                 </configuration>
             </plugin>
         </plugins>

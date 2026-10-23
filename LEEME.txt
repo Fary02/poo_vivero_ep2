@@ -4,13 +4,17 @@ Vivero Hojas del Sur - DSY1102 Programación Orientada a Objetos
 
 CONTENIDO
 ---------
-pom.xml                                   Proyecto Maven configurado para Java 21.
+pom.xml                                   Proyecto Maven configurado para Java 21, con las
+                                          dependencias de JavaFX ya incluidas.
+src/main/java/cl/duoc/vivero/
+    Launcher.java                         Punto de entrada: ejecuta esta clase para iniciar la aplicación.
+    App.java                              Aplicación JavaFX: carga la vista principal y abre la ventana.
 src/main/java/cl/duoc/vivero/model/       Modelo del sistema (ya implementado y probado):
     Despachable.java
     Planta.java
     PlantaInterior.java
     PlantaExterior.java
-src/main/resources/cl/duoc/vivero/        Carpeta para los recursos del proyecto.
+src/main/resources/cl/duoc/vivero/view/   Carpeta para las vistas FXML.
 
 CÓMO ABRIR EL PROYECTO EN INTELLIJ IDEA
 ---------------------------------------
@@ -18,6 +22,20 @@ CÓMO ABRIR EL PROYECTO EN INTELLIJ IDEA
 2. En IntelliJ IDEA: File > Open... y selecciona la carpeta del proyecto.
 3. Si IntelliJ lo pregunta, elige "Trust Project" y abre el proyecto como proyecto Maven.
 4. Verifica que el JDK del proyecto sea 21 (File > Project Structure > Project).
+
+CÓMO EJECUTAR LA APLICACIÓN
+---------------------------
+- Ejecuta la clase Launcher (botón Run junto al método main).
+- La clase App carga la vista principal desde:
+      src/main/resources/cl/duoc/vivero/view/main-view.fxml
+  Debes crear ese archivo con Scene Builder. Mientras no exista, la aplicación
+  se detiene con el mensaje "No se encontró la vista principal".
+
+LO QUE DEBES AGREGAR AL pom.xml
+-------------------------------
+- La dependencia de la librería Gson, en el lugar indicado por el comentario.
+  Luego recarga el proyecto Maven (ícono "Load Maven Changes" o
+  clic derecho en pom.xml > Maven > Reload Project).
 
 IMPORTANTE
 ----------
