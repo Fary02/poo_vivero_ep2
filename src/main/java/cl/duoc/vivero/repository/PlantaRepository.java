@@ -5,26 +5,24 @@ import cl.duoc.vivero.dao.PlantaDao;
 import cl.duoc.vivero.model.Planta;
 import cl.duoc.vivero.model.PlantaExterior;
 import cl.duoc.vivero.model.PlantaInterior;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Mantiene la lista observable de plantas y la persiste mediante los DAO
+ * Mantiene en memoria la lista de plantas y la persiste mediante los DAO
  * despues de cada cambio, sin que el usuario deba guardar.
  *
  * Hay un DAO (y un archivo) por tipo de planta. Cada cambio reescribe solo
  * el archivo del tipo afectado y, ademas, se aplica primero a una COPIA de
- * la lista: solo si el guardado resulta se modifica la lista observable.
+ * la lista: solo si el guardado resulta se modifica la lista.
  * Asi la tabla nunca muestra un cambio que no quedo en el archivo.
  */
 public class PlantaRepository implements Repository<Planta> {
 
     private final PlantaDao<PlantaInterior> daoInteriores;
     private final PlantaDao<PlantaExterior> daoExteriores;
-    private final ObservableList<Planta> plantas = FXCollections.observableArrayList();
+    private final List<Planta> plantas = new ArrayList<>();
 
     public PlantaRepository(PlantaDao<PlantaInterior> daoInteriores, PlantaDao<PlantaExterior> daoExteriores) {
         this.daoInteriores = daoInteriores;
@@ -35,12 +33,13 @@ public class PlantaRepository implements Repository<Planta> {
     public void cargar() throws PersistenciaException {
         List<Planta> todas = new ArrayList<>(daoInteriores.cargar());
         todas.addAll(daoExteriores.cargar());
-        plantas.setAll(todas);
+        plantas.clear();
+        plantas.addAll(todas);
     }
 
     @Override
-    public ObservableList<Planta> listar() {
-        return plantas;
+    public List<Planta> listar() {
+        return new ArrayList<>(plantas);
     }
 
     @Override

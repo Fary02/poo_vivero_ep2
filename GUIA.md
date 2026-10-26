@@ -24,7 +24,9 @@ Registrar ─► PrincipalController.onRegistrar()
         PlantaRepository.agregar(planta)
                 │  1. copia de la lista + la planta nueva
                 │  2. dao.guardar(solo las del tipo afectado)  ──► interiores.json | exteriores.json
-                │  3. si el guardado resultó: lista observable.add(...)  ──► la tabla se actualiza sola
+                │  3. si el guardado resultó: la lista en memoria cambia
+                ▼
+        sincronizarTabla()  ──► ObservableList.setAll(repositorio.listar())  ──► la tabla se actualiza sola
                 ▼
         mensaje "Menta (Interior) registrada correctamente." + formulario vacío
 ```
@@ -75,12 +77,13 @@ if (plantas == null) return new ArrayList<>();     // archivo vacío
 
 ## Paso 4 — Repository (sección 5)
 
-`PlantaRepository` recibe los dos DAO y mantiene una `ObservableList<Planta>` con todas las plantas.
+`PlantaRepository` recibe los dos DAO y mantiene en memoria una `List<Planta>` (de `java.util`) con todas las plantas. **No usa JavaFX**: la rúbrica pide que el Repository no dependa del framework de interfaz.
 
-- `cargar()` junta los resultados de ambos DAO y los carga con `setAll`.
-- `agregar` y `eliminar` trabajan **primero sobre una copia**, guardan y solo después modifican la lista observable. Si el guardado falla, la tabla queda como estaba y no se informa éxito.
+- `cargar()` junta los resultados de ambos DAO en la lista en memoria. `listar()` devuelve una copia.
+- `agregar` y `eliminar` trabajan **primero sobre una copia**, guardan y solo después modifican la lista en memoria. Si el guardado falla, la tabla queda como estaba y no se informa éxito.
 - Se reescribe **solo el archivo del tipo afectado** (`instanceof`).
 - El controlador usa la interfaz `Repository<Planta>`; no conoce Gson ni los archivos.
+- La conversión a colección observable es responsabilidad de la vista (paso 5).
 
 ## Paso 5 — Controlador: inicialización y tabla (secciones 3 y 5)
 
@@ -91,12 +94,13 @@ cmbTipo.getItems().setAll(INTERIOR, EXTERIOR);
 boxInterior.disableProperty().bind(cmbTipo.valueProperty().isNotEqualTo(INTERIOR));
 boxExterior.disableProperty().bind(cmbTipo.valueProperty().isNotEqualTo(EXTERIOR));
 ...
-tblPlantas.setItems(repositorio.listar());
+tblPlantas.setItems(plantas);      // ObservableList propia del controlador, creada una vez
 repositorio.cargar();
+sincronizarTabla();               // plantas.setAll(repositorio.listar())
 ```
 
 - Los grupos se **deshabilitan** según el tipo elegido; sin tipo, ambos quedan deshabilitados.
-- La tabla se enlaza **una vez** a la lista observable del repositorio. Después de cada registro o eliminación la tabla se actualiza sola: no se vuelve a asignar ni a recargar.
+- La tabla se enlaza **una vez** a una `ObservableList` del controlador. Tras cargar, registrar o eliminar, `sincronizarTabla()` copia a ella los datos del repositorio con `setAll`: la tabla se actualiza sola y no se vuelve a asignar ni a recargar la vista.
 - `colTipo` y `colPrecio` no son atributos: se calculan con `setCellValueFactory(celda -> ...)` usando `getTipo()` y `calcularPrecio()` del modelo. El controlador **no recalcula** el precio.
 - El precio se guarda como número y solo se formatea al dibujar la celda: si la columna fuera de texto (`"$10.000"`), `$8.000` quedaría después de `$10.000` al ordenar.
 - Si `cargar()` falla (archivo dañado), el mensaje aparece en la ventana y la aplicación sigue funcionando con la tabla vacía.
@@ -146,7 +150,9 @@ Si el guardado falla (`PersistenciaException`), el mensaje de error reemplaza al
 | `NullPointerException` al iniciar con un archivo vacío | No se consideró el `null` que retorna `fromJson`. |
 | La planta exterior no queda lista para despacho | Se olvidó llamar a `marcarListaParaDespacho()` cuando la casilla está marcada. |
 | El volumen `6,5` se rechaza | `Double.parseDouble` no acepta la coma: hay que reemplazarla por punto antes de convertir. |
-| La tabla muestra una planta que no está en el archivo | Se modificó la lista observable antes de guardar. |
+| La tabla muestra una planta que no está en el archivo | Se actualizó la tabla antes de guardar: primero `repositorio.agregar(...)` y solo después `sincronizarTabla()`. |
+| El Repository importa `javafx.collections` | La capa de datos depende del framework de interfaz; debe devolver una `List` y la vista la adapta. |
+| La tabla no cambia tras registrar | Se olvidó `sincronizarTabla()` o la tabla quedó enlazada a otra lista. |
 | Se valida el volumen de una planta de exterior | Se leyeron todos los campos sin considerar el tipo elegido. |
 | El formulario no queda vacío tras registrar | Falta limpiar los campos, el selector y las casillas después del éxito. |
 | Un mensaje de éxito sigue visible tras un error | Se usó `Alert` o se concatenó texto: cada `setText` debe reemplazar el anterior. |

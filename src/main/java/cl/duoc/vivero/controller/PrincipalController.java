@@ -9,6 +9,8 @@ import cl.duoc.vivero.repository.PlantaRepository;
 import cl.duoc.vivero.repository.Repository;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -68,6 +70,8 @@ public class PrincipalController {
     @FXML private Label lblMensaje;
 
     private Repository<Planta> repositorio;
+    /** Coleccion observable de la vista: se crea una vez y se sincroniza con el repositorio tras cada operacion. */
+    private final ObservableList<Planta> plantas = FXCollections.observableArrayList();
 
     /** Lo llama FXMLLoader al terminar de inyectar los @FXML. */
     @FXML
@@ -83,13 +87,14 @@ public class PrincipalController {
         repositorio = new PlantaRepository(
                 new GsonPlantaDao<>(ARCHIVO_INTERIORES, PlantaInterior.class),
                 new GsonPlantaDao<>(ARCHIVO_EXTERIORES, PlantaExterior.class));
-        // La tabla usa la lista observable del repositorio: refleja cada cambio sin recargar.
-        tblPlantas.setItems(repositorio.listar());
+        // La tabla usa una lista observable propia de la vista: refleja cada cambio sin recargar.
+        tblPlantas.setItems(plantas);
 
         // Carga inicial: si los archivos no existen la tabla queda vacia sin error;
         // si estan danados se avisa en la ventana y la aplicacion sigue funcionando.
         try {
             repositorio.cargar();
+            sincronizarTabla();
             lblMensaje.setText("");
         } catch (PersistenciaException e) {
             mostrarMensaje(e.getMessage() + " La aplicación inicia sin plantas.", false);
@@ -147,6 +152,7 @@ public class PrincipalController {
                 planta = exterior;
             }
             repositorio.agregar(planta);
+            sincronizarTabla();
             mostrarMensaje(planta.getNombre() + " (" + planta.getTipo() + ") registrada correctamente.", true);
             limpiarFormulario();   // el formulario queda listo para un nuevo registro
         } catch (IllegalArgumentException e) {
@@ -166,10 +172,16 @@ public class PrincipalController {
         }
         try {
             repositorio.eliminar(seleccionada);
+            sincronizarTabla();
             mostrarMensaje(seleccionada.getNombre() + " (" + seleccionada.getTipo() + ") eliminada.", true);
         } catch (PersistenciaException e) {
             mostrarMensaje(e.getMessage(), false);
         }
+    }
+
+    /** Copia los datos del repositorio a la coleccion observable que muestra la tabla. */
+    private void sincronizarTabla() {
+        plantas.setAll(repositorio.listar());
     }
 
     /**

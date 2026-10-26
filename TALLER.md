@@ -16,7 +16,7 @@ Este documento es del docente y vive en la rama `solucion`. La rama `main` conti
 | 1. Configuración | 10 | Gson en el `pom.xml`, ejecutar `Launcher`, ver el aviso de vista inexistente | 2.1.1 (6%) |
 | 2. Vista | 20 | `main-view.fxml` en Scene Builder con formulario, tabla, Eliminar y `Label` de mensajes; `fx:controller` y `fx:id` | 2.2.1 y 2.2.2 (14%) |
 | 3. Persistencia | 30 | `PlantaDao`, `GsonPlantaDao`, `PersistenciaException`, `Repository` y `PlantaRepository` | 2.7.1 (9%), 2.4.1 (8%) |
-| 4. Controlador base | 15 | `initialize()`, columnas, tabla enlazada a la lista del repositorio, campos por tipo, carga inicial | 2.3.1 (8%), 2.5.1 a 2.5.3 (12%) |
+| 4. Controlador base | 15 | `initialize()`, columnas, tabla enlazada a una lista observable propia, campos por tipo, carga inicial | 2.3.1 (8%), 2.5.1 a 2.5.3 (12%) |
 | 5. Registrar | 25 | Validación, mensajes, creación de la planta, formulario vacío al terminar | 2.6.1 y 2.6.2 (14%), 2.3.2 (6%), 2.4.2 (7%) |
 | 6. Eliminar y archivos | 10 | Eliminar con y sin selección, guardado automático, errores de lectura y de escritura | 2.7.2 (8%) |
 | 7. Verificación | 10 | Datos de prueba, cerrar y abrir, archivo dañado | 2.8.1 (8%) |
@@ -31,7 +31,7 @@ Este documento es del docente y vive en la rama `solucion`. La rama `main` conti
 | 10 | Configuración: Gson, `Launcher`, `App`, aviso de vista inexistente | Entender el arranque sin `module-info`. |
 | 20 | Vista en Scene Builder y vinculación con el controlador | Aprender a nombrar los `fx:id` desde el principio. |
 | 15 | DAO con Gson | Archivo ausente, vacío y dañado. |
-| 15 | Repository con lista observable y guardado sobre copia | La tabla nunca muestra algo que no quedó en el archivo. |
+| 15 | Repository con `List` en memoria (sin JavaFX) y guardado sobre copia | La tabla nunca muestra algo que no quedó en el archivo. |
 | 10 | Controlador base: `initialize()`, columnas, tabla, carga inicial | Primer resultado visible: la aplicación abre y muestra los datos del archivo. |
 | 5 | Punto de control: compila, abre y carga | Cierre y tarea (practicar con una Forma). |
 
@@ -71,8 +71,8 @@ Una idea por bloque, para decir en voz alta antes de escribir código:
 
 1. **Configuración.** El proyecto base ya sabe abrir la ventana; solo falta lo que el enunciado pide agregar: Gson. Si no compila, ningún indicador se puede evidenciar.
 2. **Vista.** La vista solo declara componentes. Cada componente que el controlador usa necesita un `fx:id`, y ese nombre se repite exactamente en el controlador.
-3. **Persistencia.** El DAO sabe leer y escribir un archivo; no sabe nada de ventanas. El Repository mantiene la lista en memoria y le pide al DAO que guarde.
-4. **Controlador base.** La tabla se enlaza una vez a la lista del repositorio; después se actualiza sola. El precio lo calcula el modelo; el controlador solo lo muestra.
+3. **Persistencia.** El DAO sabe leer y escribir un archivo; no sabe nada de ventanas. El Repository mantiene la lista en memoria (sin depender de JavaFX) y le pide al DAO que guarde.
+4. **Controlador base.** La tabla se enlaza una vez a una `ObservableList` del controlador; después de cada operación se copian los datos del repositorio y la tabla se actualiza sola. El precio lo calcula el modelo; el controlador solo lo muestra.
 5. **Registrar.** Primero validar, después crear, después guardar, y solo si guardó, informar y limpiar. Un error nunca borra lo que el usuario escribió.
 6. **Eliminar y archivos.** Se elimina la fila seleccionada, no un nombre. Si no se pudo escribir, no se informa éxito.
 7. **Verificación.** Probar como lo haría el docente: datos de prueba, cerrar y abrir, un archivo dañado.

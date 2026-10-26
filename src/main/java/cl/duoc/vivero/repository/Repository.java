@@ -1,17 +1,20 @@
 package cl.duoc.vivero.repository;
 
 import cl.duoc.vivero.dao.PersistenciaException;
-import javafx.collections.ObservableList;
+
+import java.util.List;
 
 /**
- * Operaciones genericas que usan los controladores. La lista que retorna
- * listar() se enlaza a la vista y refleja cada cambio.
+ * Operaciones genericas que usan los controladores. Trabaja solo con colecciones
+ * de dominio (java.util): no depende de JavaFX. La vista adapta estos datos a
+ * una coleccion observable.
  */
 public interface Repository<T> {
 
     void cargar() throws PersistenciaException;
 
-    ObservableList<T> listar();
+    /** @return una copia de los elementos en memoria; modificarla no cambia el repositorio */
+    List<T> listar();
 
     void agregar(T elemento) throws PersistenciaException;
 
